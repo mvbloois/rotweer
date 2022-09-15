@@ -11,7 +11,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  scrape:
+  rotweer:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -31,8 +31,8 @@ jobs:
           R -e 'install.packages("slider")'
           R -e 'install.packages("showtext")'
           R -e 'install.packages("patchwork")'
-      - name: Scrape
-        run: Rscript rotweer.R
+      - name: Rotweer
+        run: Rscript R/rotweer.R
 
       - name: Commit files
         run: |
