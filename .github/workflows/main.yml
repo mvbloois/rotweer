@@ -25,7 +25,12 @@ jobs:
 
       - name: Install packages
         run: |
-          R -e 'install.packages("tidyverse", "janitor", "slider", "showtext", "patchwork")'
+          R -e 'install.packages("tidyverse")'
+          R -e 'install.packages("lubridate")'
+          R -e 'install.packages("janitor")'
+          R -e 'install.packages("slider")'
+          R -e 'install.packages("showtext")'
+          R -e 'install.packages("patchwork")'
       - name: Scrape
         run: Rscript rotweer.R
 
