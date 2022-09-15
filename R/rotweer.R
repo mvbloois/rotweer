@@ -16,6 +16,10 @@ rt_raw <-
   read_delim("./data/etmgeg_344.zip", delim = ",", skip = 50) %>%
   clean_names()
 
+max_date <- ymd(max(rt_raw$yyyymmdd))
+
+last_day <- if_else(max_date == ceiling_date(max_date, unit = "month") - days(1), max_date, floor_date(max_date, unit = "month") - days(1))
+
 # fonts
 font_add_google(name = "Titillium Web", family = "titillium")
 showtext_opts(dpi = 300)
@@ -73,9 +77,7 @@ rt_base <- rt_raw %>%
                                        .before = 29,
                                        .complete = TRUE)) %>%
   drop_na() %>% 
-  filter(date <= as.Date("2022-08-31"))
-
-last_day <- max(rt_base$date)
+  filter(date <= last_day)
 
 axis_day <- seq.Date(from = last_day - years(1) + days(1),
                      to = last_day,
@@ -144,7 +146,7 @@ tbl_2 <- inner_join(
               .groups = "drop")
 ,
   rt_base %>%
-    filter(date <= as.Date("2022-08-31")) %>%
+    filter(date <= last_day) %>%
     filter(date >= max(date) - years(1) + days(1)) %>%
     group_by(yr = year(date), mth = month(date)) %>%
     summarise(sum_rain = sum(rain),
@@ -221,7 +223,7 @@ plt_3 <- tbl_2 %>%
 
 plt_1 / plt_2 / plt_3 +
   plot_annotation(
-    title = paste("Yearly Rotterdam weather summary up to", max(rt_temp$date),
+    title = paste("Yearly Rotterdam weather summary up to", last_day,
                   "(compared to 1991-2020)"),
     caption = "Source: KNMI",
     theme = theme(plot.title = element_text(size = 20))
