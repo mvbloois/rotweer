@@ -38,7 +38,7 @@ jobs:
         run: |
           git config --local user.name github-actions
           git config --local user.email "actions@github.com"
-          git add plots/*
+          git add plots/*.png
           git commit -am "GH ACTION Autorun ${date}"
           git push
         env:
