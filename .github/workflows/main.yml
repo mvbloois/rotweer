@@ -40,6 +40,7 @@ jobs:
           git config --local user.email "actions@github.com"
           git add data/*
           git add plots/*
+          git add Rplots.pdf
           git commit -am "GH ACTION Autorun ${date}"
           git push
         env:
