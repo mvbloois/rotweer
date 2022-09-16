@@ -13,7 +13,7 @@ download.file(
 )
 
 rt_raw <-
-  read_delim("./data/etmgeg_344.zip", delim = ",", skip = 50) %>%
+  read_delim("data/etmgeg_344.zip", delim = ",", skip = 50) %>%
   clean_names()
 
 max_date <- ymd(max(rt_raw$yyyymmdd))
@@ -233,6 +233,6 @@ plt_1 / plt_2 / plt_3 +
 #        width = 10, height = 10, dpi = 300,
 #        device = cairo_pdf)
 
-ggsave(paste0("./plots/rotweer_", last_day, ".png"),
+ggsave(paste0("plots/rotweer_", last_day, ".png"),
        width = 10, height = 10, dpi = 300,
        device = "png")
