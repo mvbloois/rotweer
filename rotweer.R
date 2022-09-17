@@ -227,7 +227,7 @@ plt_total <- plt_1 / plt_2 / plt_3 +
     theme = theme(plot.title = element_text(size = 20))
   )
 
-ggsave(plt_total,
-       paste0("plots/rotweer_", last_day, ".png"),
+ggsave(paste0("plots/rotweer_", last_day, ".png"),
+       plt_total,
        width = 10, height = 10, dpi = 300,
        device = "png")
