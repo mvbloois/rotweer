@@ -104,8 +104,6 @@ rt_temp <- rt_temp_ref %>%
   mutate(hotness = ifelse(temp > mov_temp, "hot", "cold"),
          doy = fct_reorder(doy, date))
 
-title <- "Daily mean temperature"
-
 plt_1 <- rt_temp %>%
   ggplot() +
   geom_segment(
@@ -128,7 +126,7 @@ plt_1 <- rt_temp %>%
   labs(
     x = NULL,
     y = NULL,
-    title = title
+    title = "Daily mean temperature"
   )
 
 
@@ -221,7 +219,7 @@ plt_3 <- tbl_2 %>%
     ) 
 
 
-plt_1 / plt_2 / plt_3 +
+plt_total <- plt_1 / plt_2 / plt_3 +
   plot_annotation(
     title = paste("Yearly Rotterdam weather summary up to", last_day,
                   "(compared to 1991-2020)"),
@@ -229,10 +227,7 @@ plt_1 / plt_2 / plt_3 +
     theme = theme(plot.title = element_text(size = 20))
   )
 
-# ggsave(paste0("rotweer_", last_day, ".pdf"),
-#        width = 10, height = 10, dpi = 300,
-#        device = cairo_pdf)
-
-ggsave(paste0("plots/rotweer_", last_day, ".png"),
+ggsave(plt_total,
+       paste0("plots/rotweer_", last_day, ".png"),
        width = 10, height = 10, dpi = 300,
        device = "png")
