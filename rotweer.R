@@ -153,10 +153,11 @@ tbl_2 <- inner_join(
     mutate(row = row_number())
   ,
   by = "mth"
-)
+) %>% 
+  mutate(x_label = format(as.Date(paste(yr, mth, 1, sep = "-")), "%m-%Y"))
 
 plt_2 <- tbl_2 %>%
-  ggplot(aes(x = row, y = sum_rain)) +
+  ggplot(aes(x = fct_reorder(x_label, row), y = sum_rain)) +
   geom_col(fill = c_rain) +
   geom_segment(
     aes(
@@ -178,7 +179,6 @@ plt_2 <- tbl_2 %>%
     linetype = 3,
     colour = c_average
   ) +
-  scale_x_continuous(breaks = tbl_2$mth, labels = axis_month) +
   scale_y_continuous(labels = scales::number_format(suffix = " mm")) +
   labs(
     x = NULL,
@@ -188,7 +188,7 @@ plt_2 <- tbl_2 %>%
 
 
 plt_3 <- tbl_2 %>%
-  ggplot(aes(x = row, y = sum_sun)) +
+  ggplot(aes(x = fct_reorder(x_label, row), y = sum_sun)) +
   geom_col(fill = c_sun) +
   geom_segment(
     aes(
@@ -210,7 +210,6 @@ plt_3 <- tbl_2 %>%
     linetype = 3,
     colour = c_average
   ) +
-  scale_x_continuous(breaks = tbl_2$mth, labels = axis_month) +
   scale_y_continuous(labels = scales::number_format(suffix = " h")) +
   labs(
     x = NULL,
