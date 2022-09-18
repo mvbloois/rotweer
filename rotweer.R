@@ -79,7 +79,7 @@ rt_base <- rt_raw %>%
   drop_na() %>% 
   filter(date <= last_day)
 
-axis_day <- seq.Date(from = last_day - years(1) + days(1),
+axis_day <- seq.Date(from = last_day - years(1) - months(1) + days(1),
                      to = last_day,
                      by = "month")
 axis_month <- axis_day %>% 
@@ -88,7 +88,7 @@ axis_day <- axis_day + days(14)
 
 # Daily data
 rt_temp_lastyear <- rt_base %>%
-  filter(date >= max(date) - years(1) + days(1)) %>%
+  filter(date >= max(date) - years(1) - months(1) + days(1)) %>%
   select(date, doy, temp)
 
 rt_temp_ref <- rt_base %>%
@@ -145,7 +145,7 @@ tbl_2 <- inner_join(
 ,
   rt_base %>%
     filter(date <= last_day) %>%
-    filter(date >= max(date) - years(1) + days(1)) %>%
+    filter(date >= max(date) - years(1) - months(1) + days(1)) %>%
     group_by(yr = year(date), mth = month(date)) %>%
     summarise(sum_rain = sum(rain),
               sum_sun = sum(sun),
