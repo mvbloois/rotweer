@@ -16,9 +16,24 @@ rt_raw <-
   read_delim("data/etmgeg_344.zip", delim = ",", skip = 50) %>%
   clean_names()
 
+# date handling
 max_date <- ymd(max(rt_raw$yyyymmdd))
 
-last_day <- if_else(max_date == ceiling_date(max_date, unit = "month") - days(1), max_date, floor_date(max_date, unit = "month") - days(1))
+last_day <- if_else(max_date == ceiling_date(max_date, unit = "month") - days(1),
+                    max_date,
+                    floor_date(max_date, unit = "month") - days(1))
+first_day <- floor_date(last_day - years(1), unit = "month")
+
+base_years <- seq(year(last_day) - 31, year(last_day) - 2, 1)
+
+axis_day <- seq.Date(from = first_day,
+                     to = last_day,
+                     by = "month")
+
+axis_month <- axis_day %>% 
+  format("%m-%Y")
+
+axis_day <- axis_day + days(14)
 
 # fonts
 font_add_google(name = "Titillium Web", family = "titillium")
@@ -79,20 +94,15 @@ rt_base <- rt_raw %>%
   drop_na() %>% 
   filter(date <= last_day)
 
-axis_day <- seq.Date(from = last_day - years(1) - months(1) + days(1),
-                     to = last_day,
-                     by = "month")
-axis_month <- axis_day %>% 
-  format("%m-%Y")
-axis_day <- axis_day + days(14)
+
 
 # Daily data
 rt_temp_lastyear <- rt_base %>%
-  filter(date >= max(date) - years(1) - months(1) + days(1)) %>%
+  filter(date >= first_day) %>%
   select(date, doy, temp)
 
 rt_temp_ref <- rt_base %>%
-  filter(year(date) %in% seq(1991, 2020, 1)) %>%
+  filter(year(date) %in% base_years) %>%
   select(doy, mov_30d_mean_temp, temp) %>%
   # 30-day moving mean for rain
   group_by(doy) %>%
@@ -120,7 +130,9 @@ plt_1 <- rt_temp %>%
   geom_line(aes(x = date, y = mov_temp, group = 1),
             colour = c_average,
             size = 1) +
-  scale_x_date(breaks = axis_day, labels = axis_month) +
+  scale_x_date(limits = c(first_day, last_day),
+                          breaks = axis_day,
+                          labels = axis_month) +
   scale_y_continuous(labels = scales::number_format(suffix = " °C")) +
   scale_colour_manual(values = c("hot" = c_hot, "cold" = c_cold)) +
   labs(
@@ -137,7 +149,7 @@ tbl_2 <- inner_join(
     summarise(sum_rain = sum(rain),
               sum_sun = sum(sun),
               .groups = "drop") %>%
-    filter(yr %in% seq(1991, 2020, 1)) %>%
+    filter(yr %in% base_years) %>%
     group_by(mth) %>%
     summarise(mean_mth_rain = mean(sum_rain),
               mean_mth_sun = mean(sum_sun),
@@ -145,7 +157,7 @@ tbl_2 <- inner_join(
 ,
   rt_base %>%
     filter(date <= last_day) %>%
-    filter(date >= max(date) - years(1) - months(1) + days(1)) %>%
+    filter(date >= first_day) %>%
     group_by(yr = year(date), mth = month(date)) %>%
     summarise(sum_rain = sum(rain),
               sum_sun = sum(sun),
@@ -220,8 +232,9 @@ plt_3 <- tbl_2 %>%
 
 plt_total <- plt_1 / plt_2 / plt_3 +
   plot_annotation(
-    title = paste("Yearly Rotterdam weather summary up to", last_day,
-                  "(compared to 1991-2020)"),
+    title = paste("Yearly Rotterdam weather summary up to ", last_day,
+                  " (compared to ", base_years[1], "-", base_years[30], ")",
+                  sep = ""),
     caption = "Source: KNMI",
     theme = theme(plot.title = element_text(size = 20))
   )
