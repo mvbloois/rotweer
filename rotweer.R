@@ -89,7 +89,8 @@ rt_base <- rt_raw %>%
   ) %>%
   mutate(mov_30d_mean_temp = slide_dbl(temp,
                                        mean,
-                                       .before = 29,
+                                       .before = 14,
+                                       .after = 14,
                                        .complete = TRUE)) %>%
   drop_na() %>% 
   filter(date <= last_day)
