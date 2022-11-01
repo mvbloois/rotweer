@@ -20,8 +20,8 @@ jobs:
         run: |
           sudo apt install libcurl4-openssl-dev
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@master
-      - uses: r-lib/actions/setup-r@master
+      - uses: actions/checkout@main
+      - uses: r-lib/actions/setup-r@main
 
       - name: Install packages
         run: |
