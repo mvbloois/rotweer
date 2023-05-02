@@ -180,7 +180,7 @@ plt_2 <- tbl_2 %>%
       yend = mean_mth_rain
     ),
     colour = c_average,
-    size = 1.5
+    linewidth = 1.5
   ) +
   geom_segment(
     aes(
@@ -211,7 +211,7 @@ plt_3 <- tbl_2 %>%
       yend = mean_mth_sun
     ),
     colour = c_average,
-    size = 1.5
+    linewidth = 1.5
   ) +
   geom_segment(
     aes(
@@ -241,6 +241,11 @@ plt_total <- plt_1 / plt_2 / plt_3 +
   )
 
 ggsave(paste0("plots/rotweer_", last_day, ".png"),
+       plt_total,
+       width = 10, height = 10, dpi = 300,
+       device = "png")
+
+ggsave(paste0("plots/rotweer_latest", last_day, ".png"),
        plt_total,
        width = 10, height = 10, dpi = 300,
        device = "png")
