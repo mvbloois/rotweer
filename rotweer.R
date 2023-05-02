@@ -245,7 +245,7 @@ ggsave(paste0("plots/rotweer_", last_day, ".png"),
        width = 10, height = 10, dpi = 300,
        device = "png")
 
-ggsave(paste0("plots/rotweer_latest", last_day, ".png"),
+ggsave(paste0("plots/rotweer_latest.png"),
        plt_total,
        width = 10, height = 10, dpi = 300,
        device = "png")
