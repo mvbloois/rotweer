@@ -1,6 +1,5 @@
 
 library(tidyverse)
-library(lubridate)
 library(janitor)
 library(patchwork)
 library(slider)
@@ -23,7 +22,8 @@ max_date <- ymd(max(rt_raw$yyyymmdd))
 last_day <- if_else(max_date == ceiling_date(max_date, unit = "month") - days(1),
                     max_date,
                     floor_date(max_date, unit = "month") - days(1))
-first_day <- floor_date(last_day - years(1), unit = "month")
+
+first_day <- floor_date(last_day %m-% years(1), unit = "month")
 
 base_years <- seq(year(last_day) - 31, year(last_day) - 2, 1)
 
@@ -126,12 +126,12 @@ plt_1 <- rt_temp %>%
       yend = mov_temp,
       colour = hotness
     ),
-    size = 1.5,
+    linewidth = 1.5,
     show.legend = FALSE
   ) +
   geom_line(aes(x = date, y = mov_temp, group = 1),
             colour = c_average,
-            size = 1) +
+            linewidth = 1) +
   scale_x_date(limits = c(first_day, last_day),
                           breaks = axis_day,
                           labels = axis_month) +
