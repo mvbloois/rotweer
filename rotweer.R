@@ -13,7 +13,7 @@ download.file(
 )
 
 rt_raw <-
-  read_delim("data/etmgeg_344.zip", delim = ",", skip = 50) %>%
+  read_delim("data/etmgeg_344.zip", delim = ",", skip = 50) |>
   clean_names()
 
 # date handling
@@ -31,7 +31,7 @@ axis_day <- seq.Date(from = first_day,
                      to = last_day,
                      by = "month")
 
-axis_month <- axis_day %>% 
+axis_month <- axis_day |> 
   format("%m-%Y")
 
 axis_day <- axis_day + days(14)
@@ -70,14 +70,14 @@ theme_update(text = element_text(family = "titillium",
   )
 
 # Base data.frame
-rt_base <- rt_raw %>%
-  filter(yyyymmdd > 19900000) %>%
+rt_base <- rt_raw |>
+  filter(yyyymmdd > 19900000) |>
   select(
     date = yyyymmdd,
     temp = tg,
     rain = rh,
     sun = sq
-  ) %>%
+  ) |>
   mutate(
     date = lubridate::ymd(date),
     temp = parse_number(temp),
@@ -87,36 +87,36 @@ rt_base <- rt_raw %>%
     rain = rain / 10,
     sun = sun / 10,
     doy = format(date, "%m-%d")
-  ) %>%
+  ) |>
   mutate(mov_30d_mean_temp = slide_dbl(temp,
                                        mean,
                                        .before = 14,
                                        .after = 14,
-                                       .complete = TRUE)) %>%
-  drop_na() %>% 
+                                       .complete = TRUE)) |>
+  drop_na() |> 
   filter(date <= last_day)
 
 
 
 # Daily data
-rt_temp_lastyear <- rt_base %>%
-  filter(date >= first_day) %>%
+rt_temp_lastyear <- rt_base |>
+  filter(date >= first_day) |>
   select(date, doy, temp)
 
-rt_temp_ref <- rt_base %>%
-  filter(year(date) %in% base_years) %>%
-  select(doy, mov_30d_mean_temp, temp) %>%
+rt_temp_ref <- rt_base |>
+  filter(year(date) %in% base_years) |>
+  select(doy, mov_30d_mean_temp, temp) |>
   # 30-day moving mean for rain
-  group_by(doy) %>%
+  group_by(doy) |>
   summarise(mov_temp = mean(mov_30d_mean_temp),
             .groups = "drop")
 
-rt_temp <- rt_temp_ref %>%
-  inner_join(rt_temp_lastyear, by = "doy") %>%
+rt_temp <- rt_temp_ref |>
+  inner_join(rt_temp_lastyear, by = "doy") |>
   mutate(hotness = ifelse(temp > mov_temp, "hot", "cold"),
          doy = fct_reorder(doy, date))
 
-plt_1 <- rt_temp %>%
+plt_1 <- rt_temp |>
   ggplot() +
   geom_segment(
     aes(
@@ -146,31 +146,31 @@ plt_1 <- rt_temp %>%
 
 # Monthly data
 tbl_2 <- inner_join(
-  rt_base %>%
-    group_by(yr = year(date), mth = month(date)) %>%
+  rt_base |>
+    group_by(yr = year(date), mth = month(date)) |>
     summarise(sum_rain = sum(rain),
               sum_sun = sum(sun),
-              .groups = "drop") %>%
-    filter(yr %in% base_years) %>%
-    group_by(mth) %>%
+              .groups = "drop") |>
+    filter(yr %in% base_years) |>
+    group_by(mth) |>
     summarise(mean_mth_rain = mean(sum_rain),
               mean_mth_sun = mean(sum_sun),
               .groups = "drop")
 ,
-  rt_base %>%
-    filter(date <= last_day) %>%
-    filter(date >= first_day) %>%
-    group_by(yr = year(date), mth = month(date)) %>%
+  rt_base |>
+    filter(date <= last_day) |>
+    filter(date >= first_day) |>
+    group_by(yr = year(date), mth = month(date)) |>
     summarise(sum_rain = sum(rain),
               sum_sun = sum(sun),
-              .groups = "drop") %>%
+              .groups = "drop") |>
     mutate(row = row_number())
   ,
   by = "mth"
-) %>% 
+) |> 
   mutate(x_label = format(as.Date(paste(yr, mth, 1, sep = "-")), "%m-%Y"))
 
-plt_2 <- tbl_2 %>%
+plt_2 <- tbl_2 |>
   ggplot(aes(x = fct_reorder(x_label, row), y = sum_rain)) +
   geom_col(fill = c_rain) +
   geom_segment(
@@ -201,7 +201,7 @@ plt_2 <- tbl_2 %>%
   ) 
 
 
-plt_3 <- tbl_2 %>%
+plt_3 <- tbl_2 |>
   ggplot(aes(x = fct_reorder(x_label, row), y = sum_sun)) +
   geom_col(fill = c_sun) +
   geom_segment(
