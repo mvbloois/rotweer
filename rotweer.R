@@ -9,7 +9,11 @@
 
 # ── 0. Dependencies ────────────────────────────────────────────────────────────
 
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(forcats)
+library(lubridate)
+library(readr)
 library(janitor)
 library(patchwork)
 library(slider)
