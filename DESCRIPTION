@@ -6,7 +6,7 @@ Description: Downloads KNMI daily weather data for Rotterdam (station 344) and
     sunshine, compared to a 30-year historical baseline.
 Authors@R: person("mvbloois", role = "aut")
 License: MIT
-Depends: R (>= 4.4.0)
+Depends: R (>= 4.5.0)
 Imports:
     dplyr,
     forcats,
