@@ -22,21 +22,26 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up R
+        id: setup-r
         uses: r-lib/actions/setup-r@v2
         with:
-          r-version: "4.4.1"
+          r-version: "4.5.0"
 
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libcurl4-openssl-dev \
+            libharfbuzz-dev \
+            libfribidi-dev
 
       - name: Set up R package cache
         uses: actions/cache@v4
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ hashFiles('**/*.R', '**/DESCRIPTION') }}
+          key: ${{ runner.os }}-r-${{ steps.setup-r.outputs.installed-r-version }}-${{ hashFiles('DESCRIPTION') }}
           restore-keys: |
+            ${{ runner.os }}-r-${{ steps.setup-r.outputs.installed-r-version }}-
             ${{ runner.os }}-r-
 
       - name: Install R packages
@@ -47,8 +52,14 @@ jobs:
             "janitor",
             "slider",
             "showtext",
-            "patchwork"
+            "patchwork",
+            "testthat"
           ), repos = "https://cloud.r-project.org")'
+
+      - name: Run tests
+        env:
+          TZ: Europe/Amsterdam
+        run: Rscript tests/run_tests.R
 
       - name: Run script
         env:

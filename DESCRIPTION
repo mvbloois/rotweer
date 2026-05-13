@@ -1,0 +1,24 @@
+Package: rotweer
+Title: Rotterdam Weather in Perspective
+Version: 0.1.0
+Description: Downloads KNMI daily weather data for Rotterdam (station 344) and
+    produces monthly summary visualisations for temperature, rainfall, and
+    sunshine, compared to a 30-year historical baseline.
+Authors@R: person("mvbloois", role = "aut")
+License: MIT
+Depends: R (>= 4.5.0)
+Imports:
+    dplyr,
+    forcats,
+    janitor,
+    lubridate,
+    patchwork,
+    readr,
+    showtext,
+    slider,
+    stringr,
+    tidyr
+Suggests:
+    testthat (>= 3.0.0),
+    tibble
+Encoding: UTF-8
