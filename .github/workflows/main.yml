@@ -28,15 +28,19 @@ jobs:
 
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libcurl4-openssl-dev \
+            libharfbuzz-dev \
+            libfribidi-dev
 
       - name: Set up R package cache
         uses: actions/cache@v4
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ hashFiles('**/*.R', '**/DESCRIPTION') }}
+          key: ${{ runner.os }}-r-4.4.1-${{ hashFiles('DESCRIPTION') }}
           restore-keys: |
+            ${{ runner.os }}-r-4.4.1-
             ${{ runner.os }}-r-
 
       - name: Install R packages
@@ -47,8 +51,14 @@ jobs:
             "janitor",
             "slider",
             "showtext",
-            "patchwork"
+            "patchwork",
+            "testthat"
           ), repos = "https://cloud.r-project.org")'
+
+      - name: Run tests
+        env:
+          TZ: Europe/Amsterdam
+        run: Rscript tests/run_tests.R
 
       - name: Run script
         env:
