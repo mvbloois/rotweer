@@ -12,6 +12,9 @@ concurrency:
   group: rotweer-update
   cancel-in-progress: false
 
+env:
+  R_LIBS_USER: /home/runner/work/_temp/Library
+
 jobs:
   rotweer:
     runs-on: ubuntu-latest
@@ -33,13 +36,19 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             libcurl4-openssl-dev \
             libharfbuzz-dev \
-            libfribidi-dev
+            libfribidi-dev \
+            libuv1-dev \
+            libfontconfig1-dev \
+            libfreetype6-dev
+
+      - name: Create R library directory
+        run: mkdir -p "${R_LIBS_USER}"
 
       - name: Set up R package cache
         uses: actions/cache@v4
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ steps.setup-r.outputs.installed-r-version }}-${{ hashFiles('DESCRIPTION') }}
+          key: ${{ runner.os }}-r-${{ steps.setup-r.outputs.installed-r-version }}-${{ hashFiles('.github/workflows/main.yml', 'rotweer.R', 'R/**/*.R') }}
           restore-keys: |
             ${{ runner.os }}-r-${{ steps.setup-r.outputs.installed-r-version }}-
             ${{ runner.os }}-r-
