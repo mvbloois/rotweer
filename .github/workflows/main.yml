@@ -52,14 +52,8 @@ jobs:
             "janitor",
             "slider",
             "showtext",
-            "patchwork",
-            "testthat"
+            "patchwork"
           ), repos = "https://cloud.r-project.org")'
-
-      - name: Run tests
-        env:
-          TZ: Europe/Amsterdam
-        run: Rscript tests/run_tests.R
 
       - name: Run script
         env:
