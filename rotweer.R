@@ -45,6 +45,9 @@ C_LINES      <- "#548c8c"
 C_TEXT       <- "#ededed"
 C_BACKGROUND <- "#2f4f4f"
 
+# Units / formatting
+DEGREE_C <- "\u00b0C"   # degree-Celsius suffix used in y-axis labels
+
 # Output
 PLOT_DIR    <- "plots"
 PLOT_WIDTH  <- 10
@@ -214,7 +217,7 @@ plt_temp <- rt_temp |>
   scale_x_date(limits = c(first_day, last_day),
                breaks  = axis_day,
                labels  = axis_month) +
-  scale_y_continuous(labels = scales::number_format(suffix = " \u00b0C")) +
+  scale_y_continuous(labels = scales::number_format(suffix = paste0(" ", DEGREE_C))) +
   scale_colour_manual(values = c("hot" = C_HOT, "cold" = C_COLD)) +
   labs(x = NULL, y = NULL, title = "Daily mean temperature")
 
